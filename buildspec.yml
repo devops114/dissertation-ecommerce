@@ -5,25 +5,15 @@ phases:
     runtime-versions:
       nodejs: 18
     commands:
-      - echo "=== DEBUG: Checking directory structure ==="
-      - pwd
-      - ls -la
-      - echo "=== Installing dependencies ==="
+      - echo "Installing dependencies"
       - cd dissertation-ecommerce/backend && npm install
       - cd ../frontend && npm install
 
-  pre_build:
-    commands:
-      - echo "=== Running tests ==="
-      - cd dissertation-ecommerce/backend && npm test
-
   build:
     commands:
-      - echo "=== Building frontend ==="
-      - cd dissertation-ecommerce/frontend && npm run build
-      - echo "=== Build completed successfully ==="
+      - echo "Build completed successfully"
 
 artifacts:
   files:
-    - '**/*'
+    - "**/*"
   base-directory: dissertation-ecommerce
