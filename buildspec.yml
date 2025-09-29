@@ -6,23 +6,25 @@ phases:
     runtime-versions:
       nodejs: 18
     commands:
-      - echo "=== Finding project root ==="
-      - PROJECT_ROOT=$(find . -name "backend" -type d | head -1 | xargs dirname)
-      - echo "Project root: $PROJECT_ROOT"
-      - cd "$PROJECT_ROOT/backend" && npm install
-      - cd "$PROJECT_ROOT/frontend" && npm install
+      - echo "=== DEBUG: Checking directory structure ==="
+      - pwd
+      - ls -la
+      - echo "=== Installing dependencies ==="
+      - cd dissertation-ecommerce/backend && npm install
+      - cd ../frontend && npm install
 
   pre_build:
     commands:
-      - PROJECT_ROOT=$(find . -name "backend" -type d | head -1 | xargs dirname)
-      - cd "$PROJECT_ROOT/backend" && npm test
+      - echo "=== Running tests ==="
+      - cd dissertation-ecommerce/backend && npm test
 
   build:
     commands:
-      - PROJECT_ROOT=$(find . -name "backend" -type d | head -1 | xargs dirname)
-      - cd "$PROJECT_ROOT/frontend" && npm run build
+      - echo "=== Building frontend ==="
+      - cd dissertation-ecommerce/frontend && npm run build
+      - echo "=== Build completed successfully ==="
 
 artifacts:
   files:
     - '**/*'
-  base-directory: $PROJECT_ROOT
+  base-directory: dissertation-ecommerce
