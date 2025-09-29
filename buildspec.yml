@@ -6,28 +6,23 @@ phases:
     runtime-versions:
       nodejs: 18
     commands:
-      - echo "=== DEBUG: Listing directory structure ==="
-      - pwd
-      - ls -la
-      - echo "=== Installing dependencies ==="
-      - ls -la backend/ || echo "Backend folder not found"
-      - ls -la frontend/ || echo "Frontend folder not found"
-      - cd backend && npm install
-      - cd ../frontend && npm install
+      - echo "=== Finding project root ==="
+      - PROJECT_ROOT=$(find . -name "backend" -type d | head -1 | xargs dirname)
+      - echo "Project root: $PROJECT_ROOT"
+      - cd "$PROJECT_ROOT/backend" && npm install
+      - cd "$PROJECT_ROOT/frontend" && npm install
 
   pre_build:
     commands:
-      - echo "=== Running tests ==="
-      - pwd
-      - ls -la
-      - cd backend && npm test
+      - PROJECT_ROOT=$(find . -name "backend" -type d | head -1 | xargs dirname)
+      - cd "$PROJECT_ROOT/backend" && npm test
 
   build:
     commands:
-      - echo "=== Building frontend ==="
-      - cd frontend && npm run build
+      - PROJECT_ROOT=$(find . -name "backend" -type d | head -1 | xargs dirname)
+      - cd "$PROJECT_ROOT/frontend" && npm run build
 
 artifacts:
   files:
     - '**/*'
-  base-directory: .
+  base-directory: $PROJECT_ROOT
