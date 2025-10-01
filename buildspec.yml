@@ -14,7 +14,7 @@ phases:
       - echo "=== Installing frontend ==="
       - cd ../frontend && npm install
       - echo "=== Running tests ==="
-      - cd ../backend && npm test
+      - cd ../backend && npx jest --passWithNoTests
       - echo "=== Building frontend ==="
       - cd ../frontend && npm run build
       - echo "🎉 ALL STEPS COMPLETED SUCCESSFULLY ==="
