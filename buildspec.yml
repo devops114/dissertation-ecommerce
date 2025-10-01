@@ -6,7 +6,7 @@ phases:
     runtime-versions:
       nodejs: 20
     commands:
-      - echo "Using Node $(node --version) and npm $(npm --version)"
+      - echo "Using Node $(node -v) and npm $(npm -v)"
       - npm install -g npm@latest
       - echo "Install phase complete"
 
@@ -18,7 +18,7 @@ phases:
       - cd ..
       - echo "Installing frontend dependencies..."
       - cd frontend
-      - rm -rf node_modules package-lock.json   # clean previous installs
+      - rm -rf node_modules package-lock.json
       - npm install
       - cd ..
       - echo "Pre-build phase complete"
@@ -31,12 +31,8 @@ phases:
       - cd ..
       - echo "Build phase complete"
 
-  post_build:
-    commands:
-      - echo "Build completed successfully"
-
 artifacts:
   files:
-    - '**/*'
-  base-directory: frontend/build
+    - backend/**
+    - frontend/build/**  # Will now work since the build is recreated
 
