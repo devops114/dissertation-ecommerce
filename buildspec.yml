@@ -1,4 +1,5 @@
 
+
 version: 0.2
 
 phases:
@@ -9,11 +10,7 @@ phases:
   pre_build:
     commands:
       - echo "Deploying infrastructure with CloudFormation..."
-      - aws cloudformation deploy \
-          --template-file infrastructure/aws/cloudformation.yml \
-          --stack-name ecommerce-dissertation \
-          --parameter-overrides KeyName=your-key-name \
-          --capabilities CAPABILITY_NAMED_IAM
+      - aws cloudformation deploy --template-file infrastructure/aws/cloudformation.yml --stack-name ecommerce-dissertation --parameter-overrides KeyName=ecommerce-key --capabilities CAPABILITY_NAMED_IAM
       - echo "Waiting for EC2 instance to be ready..."
       - aws cloudformation wait stack-create-complete --stack-name ecommerce-dissertation
 
@@ -27,7 +24,7 @@ phases:
     commands:
       - echo "Deploying application to EC2..."
       - chmod +x scripts/deploy.sh
-      - ./scripts/deploy.sh  # ← **ADD THIS LINE!**
+      - ./scripts/deploy.sh
 
 artifacts:
   files:
