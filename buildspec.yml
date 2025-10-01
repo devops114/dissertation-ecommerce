@@ -1,3 +1,4 @@
+
 version: 0.2
 
 phases:
@@ -12,13 +13,13 @@ phases:
   pre_build:
     commands:
       - echo "=== Running tests ==="
-      - cd backend && npm test 
+      - cd backend && npm test
 
   build:
     commands:
       - echo "=== Building frontend ==="
-      - cd frontend && npm run build
-      - echo "=== Build completed successfully ==="
+      - cd ../frontend && npm run build
+      - echo "🎉 BUILD SUCCESSFUL ==="
 
 artifacts:
   files:
