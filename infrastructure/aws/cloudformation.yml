@@ -1,3 +1,4 @@
+
 AWSTemplateFormatVersion: '2010-09-09'
 Description: 'Ecommerce App Infrastructure'
 
@@ -15,6 +16,19 @@ Resources:
       KeyName: !Ref KeyName
       SecurityGroups:
         - !Ref AppSecurityGroup
+      UserData:
+        Fn::Base64: |
+          #!/bin/bash
+          yum update -y
+          # Install Node.js
+          curl -sL https://rpm.nodesource.com/setup_20.x | bash -
+          yum install -y nodejs
+          # Install PM2 for process management
+          npm install -g pm2
+          # Create app directory
+          mkdir -p /home/ec2-user/app
+          chown ec2-user:ec2-user /home/ec2-user/app
+          echo "Infrastructure setup complete!"
 
   AppSecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -40,6 +54,11 @@ Resources:
 
 Outputs:
   InstanceId:
+    Description: EC2 Instance ID
     Value: !Ref EcommerceInstance
+  PublicIP:
+    Description: Public IP Address
+    Value: !GetAtt EcommerceInstance.PublicIp
   WebsiteURL:
+    Description: Application URL
     Value: !Sub 'http://${EcommerceInstance.PublicDnsName}:3000'
