@@ -8,9 +8,9 @@ phases:
     commands:
       - echo "=== Installing dependencies ==="
       - cd backend && npm install
-      - cd ../frontend && npm ci --force
-      - echo "=== Building frontend ==="
-      - cd ../frontend && npm run build
+      - cd ../frontend && npm install
+      - echo "=== Building frontend with npx ==="
+      - cd ../frontend && npx react-scripts build
       - echo "🎉 BUILD SUCCESSFUL ==="
 
 artifacts:
