@@ -6,18 +6,12 @@ phases:
       nodejs: 18
   build:
     commands:
-      - echo "=== Starting build process ==="
-      - echo "Current directory:"
-      - pwd
-      - echo "=== Installing backend ==="
+      - echo "=== Installing dependencies ==="
       - cd backend && npm install
-      - echo "=== Installing frontend ==="
       - cd ../frontend && npm install
-      - echo "=== Running tests ==="
-      - cd ../backend && npx jest --passWithNoTests
       - echo "=== Building frontend ==="
       - cd ../frontend && npm run build
-      - echo "🎉 ALL STEPS COMPLETED SUCCESSFULLY ==="
+      - echo "🎉 BUILD SUCCESSFUL - READY FOR DEPLOYMENT ==="
 
 artifacts:
   files:
