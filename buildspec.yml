@@ -12,7 +12,7 @@ phases:
   pre_build:
     commands:
       - echo "=== Running tests ==="
-      - cd backend && npm test -- --passWithNoTests
+      - cd backend && npm test 
 
   build:
     commands:
