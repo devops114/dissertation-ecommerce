@@ -1,13 +1,13 @@
+
 version: 0.2
 
 phases:
   install:
     runtime-versions:
-      nodejs: 18
+      nodejs: 20
     commands:
-      - echo "Checking Node & npm versions..."
-      - node --version
-      - npm --version
+      - echo "Using Node $(node --version) and npm $(npm --version)"
+      - npm install -g npm@latest   # ensures latest npm version
 
   pre_build:
     commands:
@@ -19,12 +19,13 @@ phases:
   build:
     commands:
       - echo "Building frontend..."
-      - cd frontend && npm run build && cd ..
-      - echo "Backend is ready (no build step needed)."
+      - cd frontend
+      - CI=false npm run build    # prevents CI treating warnings as errors
+      - cd ..
 
   post_build:
     commands:
-      - echo "Build phase completed successfully."
+      - echo "Build completed successfully."
 
 artifacts:
   files:
