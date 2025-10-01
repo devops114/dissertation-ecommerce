@@ -1,32 +1,41 @@
-
-
 version: 0.2
 
 phases:
   install:
     runtime-versions:
-      nodejs: 18  # or 16, 20 - use LTS version
+      nodejs: 18
     commands:
-      - echo "Installing dependencies..."
+      - echo "Checking Node & npm versions..."
       - node --version
       - npm --version
 
   pre_build:
     commands:
+      - echo "Installing backend dependencies..."
+      - cd backend && npm install && cd ..
       - echo "Installing frontend dependencies..."
-      - cd frontend
-      - npm ci  # Use npm ci for cleaner, reproducible installs
+      - cd frontend && npm install && cd ..
 
   build:
     commands:
       - echo "Building frontend..."
-      - npm run build
+      - cd frontend && npm run build && cd ..
+      - echo "Backend is ready (no build step needed)."
 
   post_build:
     commands:
-      - echo "Build completed successfully"
+      - echo "Build phase completed successfully."
 
 artifacts:
   files:
     - '**/*'
-  base-directory: frontend/build  # or wherever your build outputs
+  secondary-artifacts:
+    frontend:
+      base-directory: frontend/build
+      files:
+        - '**/*'
+    backend:
+      base-directory: backend
+      files:
+        - '**/*'
+
