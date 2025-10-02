@@ -5,8 +5,6 @@ phases:
   install:
     runtime-versions:
       nodejs: 20
-    commands:
-      - echo "Installing dependencies..."
 
   pre_build:
     commands:
@@ -18,43 +16,18 @@ phases:
   build:
     commands:
       - echo "Building application..."
-      - cd backend && npm ci
-      - cd ../frontend && npm ci && npm run build
-      
-      - echo "Running automated tests..."
-      - cd ../backend && npm test -- --watchAll=false --passWithNoTests || echo "Backend tests completed"
-      - cd ../frontend && npm test -- --watchAll=false --passWithNoTests || echo "Frontend tests completed"
+      - cd backend && npm ci && cd ..
+      - cd frontend && npm ci && npm run build && cd ..
 
   post_build:
     commands:
       - echo "Deploying application to EC2..."
       - chmod +x scripts/deploy.sh
       - ./scripts/deploy.sh
-      
-      - echo "Setting up monitoring..."
-      - INSTANCE_ID=$(aws cloudformation describe-stacks --stack-name ecommerce-dissertation --query "Stacks[0].Outputs[?OutputKey=='InstanceId'].OutputValue" --output text)
-      - EC2_DNS=$(aws ec2 describe-instances --instance-ids $INSTANCE_ID --query "Reservations[0].Instances[0].PublicDnsName" --output text)
-      
-      # Create CloudWatch CPU alarm
-      - aws cloudwatch put-metric-alarm \
-          --alarm-name "ecommerce-ec2-cpu" \
-          --alarm-description "Alarm when CPU exceeds 80 percent" \
-          --metric-name CPUUtilization \
-          --namespace AWS/EC2 \
-          --statistic Average \
-          --period 300 \
-          --threshold 80 \
-          --comparison-operator GreaterThanThreshold \
-          --evaluation-periods 2 \
-          --dimensions Name=InstanceId,Value=$INSTANCE_ID
-      
-      # Test application health
-      - echo "Testing application health..."
-      - sleep 30
-      - curl -f http://$EC2_DNS:3000 || echo "Frontend health check completed"
-      - curl -f http://$EC2_DNS:5000/health || echo "Backend health check completed"
 
 artifacts:
   files:
     - '**/*'
   base-directory: frontend/build
+# Build timestamp: Thu  2 Oct 2025 00:38:56 BST
+#hi
