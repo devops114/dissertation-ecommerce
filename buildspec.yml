@@ -1,5 +1,4 @@
 
-
 version: 0.2
 
 phases:
@@ -23,6 +22,10 @@ phases:
   post_build:
     commands:
       - echo "Deploying application to EC2..."
+      - echo "Listing repo root contents..."
+      - ls -l
+      - echo "Listing scripts directory..."
+      - ls -l scripts || true
       - chmod +x scripts/deploy.sh
       - ./scripts/deploy.sh
 
@@ -30,4 +33,4 @@ artifacts:
   files:
     - '**/*'
   base-directory: frontend/build
-# Build timestamp: Thu  2 Oct 2025 00:38:56 BST
+
