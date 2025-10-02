@@ -16,16 +16,15 @@ phases:
   build:
     commands:
       - echo "Building application..."
-      - cd backend && npm ci
-      - cd ../frontend && npm ci && npm run build
+      - cd backend && npm ci && cd ..
+      - cd frontend && npm ci && npm run build && cd ..
 
   post_build:
     commands:
       - echo "Deploying application to EC2..."
-      - echo "Listing repo root contents..."
-      - ls -l
-      - echo "Listing scripts directory..."
-      - ls -l scripts || true
+      - echo "Current directory: $(pwd)"
+      - echo "Listing scripts directory:"
+      - ls -la scripts/
       - chmod +x scripts/deploy.sh
       - ./scripts/deploy.sh
 
@@ -33,4 +32,3 @@ artifacts:
   files:
     - '**/*'
   base-directory: frontend/build
-
