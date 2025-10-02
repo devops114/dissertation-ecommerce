@@ -1,0 +1,36 @@
+
+# azure-pipelines.yml
+trigger:
+- main
+
+pool: 
+  name: 'Default'  # ← Use your local agent pool name
+
+variables:
+  nodeVersion: '20.x'
+
+jobs:
+- job: Build
+  displayName: 'Build Application'
+  steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '$(nodeVersion)'
+    displayName: 'Install Node.js'
+  
+  - script: |
+      cd backend
+      npm ci
+    displayName: 'Install Backend Dependencies'
+  
+  - script: |
+      cd frontend
+      npm ci
+      npm run build
+    displayName: 'Build Frontend'
+  
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathToPublish: 'frontend/build'
+      artifactName: 'frontend-build'
+    displayName: 'Publish Build Artifacts'
