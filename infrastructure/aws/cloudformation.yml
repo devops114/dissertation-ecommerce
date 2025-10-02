@@ -1,58 +1,47 @@
 
-# infrastructure/aws/cloudformation.yml
 AWSTemplateFormatVersion: '2010-09-09'
-Description: 'Ecommerce Dissertation Infrastructure'
+Description: 'Ecommerce App Infrastructure'
 
 Parameters:
   KeyName:
+    Description: Name of an existing EC2 Key Pair
     Type: AWS::EC2::KeyPair::KeyName
-    Description: EC2 Key Pair
 
 Resources:
-  # RDS PostgreSQL Database
-  Database:
-    Type: AWS::RDS::DBInstance
-    Properties:
-      DBName: ecommerce
-      Engine: postgres
-      EngineVersion: '13.7'
-      DBInstanceClass: db.t3.micro
-      MasterUsername: admin
-      MasterUserPassword: '{{resolve:secretsmanager:db-password}}'
-      AllocatedStorage: 20
-      PubliclyAccessible: true
-
-  # EC2 Instance
-  WebServer:
+  EcommerceInstance:
     Type: AWS::EC2::Instance
     Properties:
-      InstanceType: t3.micro
+      InstanceType: t3.medium
       ImageId: ami-0c02fb55956c7d316
       KeyName: !Ref KeyName
       SecurityGroups:
-        - !Ref WebSecurityGroup
+        - !Ref AppSecurityGroup
       UserData:
         Fn::Base64: |
           #!/bin/bash
           yum update -y
-          curl -sL https://rpm.nodesource.com/setup_16.x | bash -
+          # Install Node.js
+          curl -sL https://rpm.nodesource.com/setup_20.x | bash -
           yum install -y nodejs
+          # Install PM2 for process management
           npm install -g pm2
+          # Create app directory
           mkdir -p /home/ec2-user/app
+          chown ec2-user:ec2-user /home/ec2-user/app
+          echo "Infrastructure setup complete!"
 
-  # Security Group
-  WebSecurityGroup:
+  AppSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: Enable HTTP, HTTPS, and SSH access
+      GroupDescription: Enable HTTP and SSH access
       SecurityGroupIngress:
-        - IpProtocol: tcp
-          FromPort: 22
-          ToPort: 22
-          CidrIp: 0.0.0.0/0
         - IpProtocol: tcp
           FromPort: 80
           ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
           CidrIp: 0.0.0.0/0
         - IpProtocol: tcp
           FromPort: 3000
@@ -62,15 +51,14 @@ Resources:
           FromPort: 5000
           ToPort: 5000
           CidrIp: 0.0.0.0/0
-        - IpProtocol: tcp
-          FromPort: 5432
-          ToPort: 5432
-          CidrIp: 0.0.0.0/0
 
 Outputs:
+  InstanceId:
+    Description: EC2 Instance ID
+    Value: !Ref EcommerceInstance
+  PublicIP:
+    Description: Public IP Address
+    Value: !GetAtt EcommerceInstance.PublicIp
   WebsiteURL:
     Description: Application URL
-    Value: !Sub 'http://${WebServer.PublicDnsName}:3000'
-  DatabaseEndpoint:
-    Description: Database Connection String
-    Value: !GetAtt Database.Endpoint.Address
+    Value: !Sub 'http://${EcommerceInstance.PublicDnsName}:3000'
