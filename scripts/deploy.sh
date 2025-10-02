@@ -1,5 +1,4 @@
 
-
 #!/bin/bash
 # deploy.sh - Uses AWS Systems Manager instead of SSH
 
@@ -58,3 +57,4 @@ echo "✅ DEPLOYMENT COMPLETED!"
 echo "🌐 Frontend URL: http://$EC2_DNS:3000"
 echo "🔗 Backend API: http://$EC2_DNS:5000"
 echo "📊 Check status: http://$EC2_DNS:5000/"
+
