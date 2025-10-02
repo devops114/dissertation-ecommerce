@@ -1,8 +1,11 @@
+
+
+// frontend/src/App.test.js
 import { render, screen } from '@testing-library/react';
 import App from './App';
 
-test('renders learn react link', () => {
+test('renders ecommerce store', () => {
   render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+  const storeElement = screen.getByText(/ecommerce store/i);
+  expect(storeElement).toBeInTheDocument();
 });
